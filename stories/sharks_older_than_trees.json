@@ -1,0 +1,44 @@
+{
+  "name": "sharks_older_than_trees",
+  "title": "サメは「木」より古い",
+  "mood": "epic awe",
+  "seed": 7,
+  "scenes": [
+    {
+      "type": "title",
+      "title": "サメは「木」より古い",
+      "narration": "信じられないかもしれない。でも、サメは木より古い。",
+      "image": "a giant prehistoric shark silhouette gliding through a deep ancient ocean, shafts of light from above, epic cinematic, dark and moody, vertical composition"
+    },
+    {
+      "type": "scene",
+      "narration": "サメが地球の海を泳ぎ始めたのは、およそ4億5000万年前。",
+      "emphasis": "4億5000万年前",
+      "image": "a primeval ancient sea teeming with strange early creatures, Ordovician ocean, atmospheric blue light, epic cinematic"
+    },
+    {
+      "type": "scene",
+      "narration": "最初の木が現れたのは、およそ3億9000万年前。サメのほうが6000万年も先輩だ。",
+      "emphasis": "6000万年も先輩",
+      "image": "a barren primeval landscape of bare rock with no trees under a pale early sky, ancient Earth before forests, desolate, epic cinematic"
+    },
+    {
+      "type": "scene",
+      "narration": "サメは恐竜より古く、恐竜を滅ぼした隕石の大絶滅さえ生き延びた。",
+      "emphasis": "恐竜より古く",
+      "image": "a huge meteor streaking across the sky above a dark ocean while a shark glides calmly in the water below, dramatic, epic cinematic"
+    },
+    {
+      "type": "statement",
+      "text": "ぜんぶ、海から見ていた",
+      "narration": "恐竜が生まれるのも、滅びるのも、サメはずっと海から見ていた。",
+      "image": "an ancient shark in the deep dark sea, a sense of vast geological time passing, silhouettes and god rays, mysterious, epic cinematic"
+    },
+    {
+      "type": "statement",
+      "text": "次に消えるのは、どっち？",
+      "narration": "4億年、姿をほぼ変えずに。さて、人類とサメ、次に絶滅するのは、どっちだろう。",
+      "image": "a lone shark silhouette gliding above a sunken modern city underwater, contrast of the ancient and the human, haunting, epic cinematic"
+    }
+  ]
+}

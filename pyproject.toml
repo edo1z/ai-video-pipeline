@@ -1,0 +1,9 @@
+[project]
+name = "ai-video-pipeline"
+version = "0.1.0"
+description = "Minimal AI video pipeline: script -> generated images -> Ken Burns -> narration -> subtitles -> mp4"
+requires-python = ">=3.10"
+dependencies = [
+    "pillow>=10.0",
+    "openai>=1.40",
+]

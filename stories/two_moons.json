@@ -1,0 +1,22 @@
+{
+  "name": "two_moons",
+  "seed": 7,
+  "scenes": [
+    {
+      "narration": "もし、夜空に月が二つあったら。",
+      "image": "a quiet town at night under a vast sky with two large glowing moons, cinematic wide shot"
+    },
+    {
+      "narration": "潮の満ち引きは今の何倍にもなり、海岸線は毎日その姿を変えるだろう。",
+      "image": "dramatic ocean with enormous tidal waves crashing under two moons, moody blue lighting"
+    },
+    {
+      "narration": "二つの月に照らされた夜は、もう暗闇ではない。",
+      "image": "silhouettes of people standing on a hill bathed in the light of two moons, atmospheric"
+    },
+    {
+      "narration": "人類はその光を、いったいどんな物語にしただろうか。",
+      "image": "ancient temple and robed stargazers looking up at two moons, mythical golden atmosphere"
+    }
+  ]
+}

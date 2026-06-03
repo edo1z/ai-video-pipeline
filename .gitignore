@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+output/
+music/*.mp3
+.python-version
