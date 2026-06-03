@@ -12,7 +12,7 @@ import argparse
 import json
 from pathlib import Path
 
-from pipeline import images, music, subtitles, tts, video
+from pipeline import images, motion, music, subtitles, tts, video
 
 ROOT = Path(__file__).parent
 OUT = ROOT / "output"
@@ -43,10 +43,27 @@ def _render_overlay(sc, png):
         subtitles.render_caption(_caption_runs(sc["narration"], sc.get("emphasis")), png)
 
 
-def run(story):
+def _scene_keys(sc, refs):
+    keys = sc.get("characters") or ([sc["character"]] if sc.get("character") else [])
+    return [k for k in keys if k in refs]
+
+
+def run(story, motion_provider=None):
     base_seed = story.get("seed", 1)
+    style = story.get("style", "")
+    characters = story.get("characters") or {}
     work = OUT / "work"
     work.mkdir(parents=True, exist_ok=True)
+
+    # Story mode: generate one reference image per character, reused across all scenes.
+    refs = {}
+    for key, ch in characters.items():
+        rp = work / f"char_{key}.png"
+        prompt = (f"{ch['desc']}. {style}. full-body character reference, "
+                  "plain neutral grey background, soft even lighting, no text")
+        print(f"[character] generating reference: {key} ...")
+        images.generate_reference(prompt, rp)
+        refs[key] = rp
 
     clips = []
     kb = 0
@@ -57,15 +74,42 @@ def run(story):
         png = work / f"txt_{i}.png"
         clip = work / f"clip_{i}.mp4"
 
-        print("  - generating image (Pollinations)...")
-        images.fetch_image(sc["image"], img, seed=base_seed * 100 + i)
-        print("  - synthesizing narration...")
-        audio = tts.synthesize(sc["narration"], work / f"aud_{i}")
-        dur = tts.probe_duration(audio) + TAIL
+        keys = _scene_keys(sc, refs)
+        descs = ". ".join(characters[k]["desc"] for k in keys) if keys else ""
+        print("  - generating image...")
+        if keys:
+            prompt = f"{descs}. {sc['image']}. {style}. vertical 9:16 composition, no text"
+            try:
+                images.generate_with_refs(prompt, [refs[k] for k in keys], img)
+            except Exception as e:
+                print(f"    ref-image failed ({e}); generating without reference")
+                images.fetch_image(f"{descs}. {sc['image']}. {style}", img, seed=base_seed * 100 + i)
+        else:
+            images.fetch_image(sc["image"], img, seed=base_seed * 100 + i)
+
+        voice = sc.get("voice") or (characters.get(keys[0], {}).get("voice") if keys else None) or "nova"
+        print(f"  - synthesizing voice ({voice})...")
+        audio = tts.synthesize(sc["narration"], work / f"aud_{i}", openai_voice=voice)
+        audio_dur = tts.probe_duration(audio)
+
+        motion_clip = None
+        if motion_provider:
+            secs = 4 if audio_dur <= 4 else (8 if audio_dur <= 8 else 12)
+            mprompt = (f"{descs}. " if descs else "") + \
+                f"{sc['image']}. subtle natural movement, keep the same character design. {style}"
+            print(f"  - motion ({motion_provider}, {secs}s)...")
+            try:
+                motion_clip = motion.generate(motion_provider, img, mprompt, secs, work / f"mot_{i}.mp4")
+            except Exception as e:
+                print(f"    motion failed ({e}); falling back to Ken Burns")
+            dur = min(audio_dur + TAIL, secs)
+        else:
+            dur = audio_dur + TAIL
+
         print("  - rendering text overlay...")
         _render_overlay(sc, png)
         print(f"  - building shot clip ({dur:.1f}s)...")
-        video.make_clip(t, img, png, audio, clip, dur, kb_index=kb)
+        video.make_clip(t, img, png, audio, clip, dur, kb_index=kb, motion_video=motion_clip)
         if t == "scene":
             kb += 1
         clips.append(clip)
@@ -91,6 +135,7 @@ def main():
     ap.add_argument("--theme", help="generate the script from a one-line theme via LLM")
     ap.add_argument("--scenes", type=int, default=4, help="number of scenes (with --theme)")
     ap.add_argument("--model", default="gpt-4o-mini", help="OpenAI model for script generation")
+    ap.add_argument("--motion", help="image-to-video provider for real motion (e.g. sora). Default: Ken Burns stills")
     args = ap.parse_args()
 
     if args.theme:
@@ -108,7 +153,7 @@ def main():
     else:
         story = json.loads((STORIES / "two_moons.json").read_text(encoding="utf-8"))
 
-    run(story)
+    run(story, motion_provider=args.motion)
 
 
 if __name__ == "__main__":

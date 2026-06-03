@@ -39,6 +39,27 @@ def _openai_image(prompt, path, model="gpt-image-1", size="1024x1536", quality="
     Path(path).write_bytes(base64.b64decode(r.data[0].b64_json))
 
 
+def generate_reference(prompt, path):
+    """One-off character reference image (saved once, reused every scene)."""
+    _openai_image(prompt, path)
+
+
+def generate_with_refs(prompt, ref_paths, path, model="gpt-image-1",
+                       size="1024x1536", quality="medium"):
+    """Generate a scene that keeps the referenced character(s) consistent.
+    Uses the images.edit endpoint with the character reference image(s)."""
+    from openai import OpenAI
+    client = OpenAI()
+    files = [open(p, "rb") for p in ref_paths]
+    try:
+        r = client.images.edit(model=model, image=files, prompt=prompt,
+                               size=size, quality=quality, n=1)
+    finally:
+        for f in files:
+            f.close()
+    Path(path).write_bytes(base64.b64decode(r.data[0].b64_json))
+
+
 def _pollinations(prompt, path, width, height, seed, retries):
     q = urllib.parse.quote(prompt)
     url = (f"https://image.pollinations.ai/prompt/{q}"

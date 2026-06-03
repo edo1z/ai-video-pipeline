@@ -40,16 +40,23 @@ def _background(shot_type, frames, kb_index, w, h, fps):
             f":x='{x}':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps}")
 
 
-def make_clip(shot_type, image, overlay, audio, out, dur, kb_index=0, fps=30, w=1080, h=1920):
+def make_clip(shot_type, image, overlay, audio, out, dur, kb_index=0, fps=30, w=1080, h=1920,
+              motion_video=None):
+    """Build one shot. Background is either a Ken Burns still (default) or a pre-made
+    motion clip (image-to-video); the same color grade, text overlay (fade-in) and our
+    narration audio are applied on top. The motion clip's own audio is dropped."""
     frames = max(1, int(round(dur * fps)))
-    vf = (_background(shot_type, frames, kb_index, w, h, fps) + f",{GRADE}[bg];"
-          "[1:v]format=rgba,fade=t=in:st=0:d=0.6:alpha=1[txt];"
-          "[bg][txt]overlay=0:0[v]")
-    _run([
-        "ffmpeg", "-y",
-        "-loop", "1", "-i", str(image),
-        "-loop", "1", "-i", str(overlay),
-        "-i", str(audio),
+    if motion_video:
+        bg = (f"[0:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},"
+              f"fps={fps},{GRADE}[bg]")
+        inputs = ["-stream_loop", "-1", "-i", str(motion_video),
+                  "-loop", "1", "-i", str(overlay), "-i", str(audio)]
+    else:
+        bg = _background(shot_type, frames, kb_index, w, h, fps) + f",{GRADE}[bg]"
+        inputs = ["-loop", "1", "-i", str(image),
+                  "-loop", "1", "-i", str(overlay), "-i", str(audio)]
+    vf = bg + ";[1:v]format=rgba,fade=t=in:st=0:d=0.6:alpha=1[txt];[bg][txt]overlay=0:0[v]"
+    _run(["ffmpeg", "-y"] + inputs + [
         "-filter_complex", vf,
         "-map", "[v]", "-map", "2:a",
         "-t", f"{dur:.3f}", "-r", str(fps),

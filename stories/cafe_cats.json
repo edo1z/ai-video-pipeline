@@ -1,0 +1,65 @@
+{
+  "name": "cafe_cats",
+  "title": "ねこカフェ繁盛記",
+  "mood": "warm cozy heartwarming",
+  "seed": 11,
+  "style": "cute warm cozy 3D animated movie style, soft cinematic lighting, expressive cartoon cats, consistent character design",
+  "characters": {
+    "mike": {
+      "desc": "Mike, a small light-grey tabby kitten with big round blue eyes and fluffy fur, wearing a blue cafe apron",
+      "voice": "nova"
+    },
+    "tencho": {
+      "desc": "Tencho, a large muscular black cat with a scar over his left eye and a stern face, wearing a white dress shirt and a black vest",
+      "voice": "onyx"
+    }
+  },
+  "scenes": [
+    {
+      "type": "title",
+      "title": "ねこカフェ繁盛記",
+      "narration": "ようこそ、ねこカフェへ。",
+      "image": "a cozy warm cat cafe interior, wooden counter, hanging plants, gentle afternoon light"
+    },
+    {
+      "type": "scene",
+      "character": "mike",
+      "voice": "nova",
+      "narration": "いらっしゃいませ！……あっ、コーヒーこぼしちゃった！",
+      "emphasis": "こぼしちゃった",
+      "image": "behind the cafe counter, panicking, a knocked-over cup of coffee spilling, flustered teary expression"
+    },
+    {
+      "type": "scene",
+      "character": "tencho",
+      "voice": "onyx",
+      "narration": "……おい。新人。",
+      "emphasis": "新人",
+      "image": "standing tall with arms crossed, glaring with an intimidating expression, dim dramatic lighting"
+    },
+    {
+      "type": "scene",
+      "character": "mike",
+      "voice": "nova",
+      "narration": "ひっ……ご、ごめんなさいっ！",
+      "emphasis": "ごめんなさい",
+      "image": "cowering and trembling, tearful scared eyes, looking very small"
+    },
+    {
+      "type": "scene",
+      "character": "tencho",
+      "voice": "onyx",
+      "narration": "……ったく。ほら、新しいの淹れ直せ。手伝ってやる。",
+      "emphasis": "手伝ってやる",
+      "image": "gently patting the kitten's head with a soft kind smile, warm golden lighting"
+    },
+    {
+      "type": "scene",
+      "characters": ["mike", "tencho"],
+      "voice": "nova",
+      "narration": "こわい店長は、ほんとは、優しい。",
+      "emphasis": "優しい",
+      "image": "the kitten and the big black cat smiling together side by side in the cozy cafe, warm happy atmosphere"
+    }
+  ]
+}
